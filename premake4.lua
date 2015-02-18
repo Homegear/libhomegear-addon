@@ -8,7 +8,7 @@ solution "homegear-addon"
       {
          "FORTIFY_SOURCE=2",
       }
-      linkoptions { "-Wl,-rpath=/lib/homegear", "-Wl,-rpath=/usr/lib/homegear" }
+      linkoptions { "-Wl,-rpath=/lib/homegear", "-Wl,-rpath=/usr/lib/homegear", "-Wl,-soname,libhomegear-addon.so.0" }
    
    project "homegear-addon"
       kind "SharedLib"
