@@ -21,7 +21,7 @@ Architecture: any
 Section: libdevel
 Priority: optional
 Homepage: https://homegear.eu
-Depends: ${shlibs:Depends}, ${misc:Depends}, libhomegear-addon0, libc6-dev | libc-dev
+Depends: ${misc:Depends}, libhomegear-addon0, libc6-dev | libc-dev
 Description: Header files for libhomegear-addon.
  This packet provides the header files you need to include
  in your own project to use Homegear's addon library.

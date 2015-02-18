@@ -18,5 +18,11 @@ override_dh_auto_install:
 	dh_installdirs
 	mkdir -p $(CURDIR)/debian/libhomegear-addon0/usr/lib/
 	cp $(CURDIR)/bin/Release/libhomegear-addon.so $(CURDIR)/debian/libhomegear-addon0/usr/lib/libhomegear-addon.so.0
+	mkdir -p $(CURDIR)/debian/libhomegear-addon0-dev/usr/include/homegear-addon
+	mkdir -p $(CURDIR)/debian/libhomegear-addon0-dev/usr/include/homegear-addon/Encoding
+	mkdir -p $(CURDIR)/debian/libhomegear-addon0-dev/usr/include/homegear-addon/HelperFunctions
+	cp $(CURDIR)/*.h $(CURDIR)/debian/libhomegear-addon0-dev/usr/include/homegear-addon/
+	cp $(CURDIR)/Encoding/*.h $(CURDIR)/debian/libhomegear-addon0-dev/usr/include/homegear-addon/Encoding
+	cp $(CURDIR)/HelperFunctions/*.h $(CURDIR)/debian/libhomegear-addon0-dev/usr/include/homegear-addon/HelperFunctions
 %:
 	dh $@
