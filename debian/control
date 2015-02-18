@@ -12,17 +12,16 @@ Section: misc
 Priority: optional
 Homepage: https://homegear.eu
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Provides an OpenWeatherMap device for Homegear.
- This packet extends Homegear by adding a new device which
- fetches data from the OpenWeatherMap service.
+Description: Provides a library to easily create addon devices for Homegear.
+ This packet provides a library to create addon devices for
+ Homegear.
 
 Package: libhomegear-addon0-dev
-Source: libhomegear-addon0
 Architecture: any
 Section: libdevel
 Priority: optional
 Homepage: https://homegear.eu
 Depends: ${shlibs:Depends}, ${misc:Depends}, libhomegear-addon0, libc6-dev | libc-dev
-Description: Provides an OpenWeatherMap device for Homegear.
- This packet extends Homegear by adding a new device which
- fetches data from the OpenWeatherMap service.
+Description: Header files for libhomegear-addon.
+ This packet provides the header files you need to include
+ in your own project to use Homegear's addon library.
