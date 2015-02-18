@@ -22,6 +22,7 @@ mv HomegearAddonLib-$2 $sourcePath
 rm -Rf $sourcePath/.* 1>/dev/null 2>&2
 rm -Rf $sourcePath/obj
 rm -Rf $sourcePath/bin
+rm -f $sourcePath/premake4*
 tar -zcpf libhomegear-addon_$version.orig.tar.gz $sourcePath
 cd $sourcePath
 dch -v $version-$1 -M

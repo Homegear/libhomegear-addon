@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 8)
 Homepage: https://homegear.eu
 
 Package: libhomegear-addon0
-Architecture: all
+Architecture: any
 Section: misc
 Priority: optional
 Homepage: https://homegear.eu
