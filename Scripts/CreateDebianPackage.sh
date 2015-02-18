@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -x
+
 if [[ $1 -lt 1 ]]
 then
 	echo "Please provide a revision number."
