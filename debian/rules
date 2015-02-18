@@ -17,6 +17,6 @@ override_dh_auto_install:
 	dh_prep
 	dh_installdirs
 	mkdir -p $(CURDIR)/debian/libhomegear-addon/usr/lib/
-	cp $(CURDIR)/bin/Release/libhomegear-addon.so $(CURDIR)/debian/libhomegear-addon/usr/lib
+	cp $(CURDIR)/bin/Release/libhomegear-addon.so $(CURDIR)/debian/libhomegear-addon/usr/lib/libhomegear-addon.so.0
 %:
 	dh $@
