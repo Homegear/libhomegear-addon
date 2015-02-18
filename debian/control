@@ -1,0 +1,17 @@
+Source: homegear-openweathermap
+Maintainer: Sathya Laufer <sathya@laufers.net>
+Section: misc
+Priority: optional
+Standards-Version: 3.9.5
+Build-Depends: debhelper (>= 8)
+Homepage: https://homegear.eu
+
+Package: homegear-openweathermap
+Architecture: all
+Section: misc
+Priority: optional
+Homepage: https://homegear.eu
+Depends: ${shlibs:Depends}, ${misc:Depends}, homegear (>= 0.5.23), php5-cli (>= 5.0.0), php5-xmlrpc (>= 5.0.0), libevent-dev (>= 2.0.0), php-pear (>= 5.0.0), php5-dev (>= 5.0.0), libcurl4-openssl-dev (>= 7.26.0), build-essential (>= 11.5), git (>= 1.0)
+Description: Provides an OpenWeatherMap device for Homegear.
+ This packet extends Homegear by adding a new device which
+ fetches data from the OpenWeatherMap service.

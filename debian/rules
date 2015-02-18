@@ -1,0 +1,22 @@
+#!/usr/bin/make -f
+
+override_dh_auto_clean:
+	rm -Rf bin
+	rm -Rf obj
+
+override_dh_auto_configure:
+	# We can for example download needed files here.
+	# All shell commands are supported
+
+override_dh_auto_build:
+	make config=release
+
+override_dh_auto_install:
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+	mkdir -p $(CURDIR)/debian/libhomegear-addon/usr/lib/
+	cp $(CURDIR)/bin/Release/libhomegear-addon.so $(CURDIR)/debian/libhomegear-addon/usr/lib
+%:
+	dh $@
