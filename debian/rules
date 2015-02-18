@@ -21,7 +21,7 @@ override_dh_auto_install:
 	cp $(CURDIR)/bin/Release/libhomegear-addon.so $(CURDIR)/debian/libhomegear-addon0/usr/lib/libhomegear-addon.so.0
 	
 	#libhomegear-addon0-dev
-	mkdir -p $(CURDIR)/debian/libhomegear-addon0/usr/lib/
+	mkdir -p $(CURDIR)/debian/libhomegear-addon0-dev/usr/lib/
 	ln -s /usr/lib/libhomegear-addon.so.0 $(CURDIR)/debian/libhomegear-addon0-dev/usr/lib/libhomegear-addon.so
 	mkdir -p $(CURDIR)/debian/libhomegear-addon0-dev/usr/include/homegear-addon
 	mkdir -p $(CURDIR)/debian/libhomegear-addon0-dev/usr/include/homegear-addon/Encoding

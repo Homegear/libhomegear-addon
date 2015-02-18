@@ -23,7 +23,6 @@ rm -Rf $sourcePath/.* 1>/dev/null 2>&2
 rm -Rf $sourcePath/obj
 rm -Rf $sourcePath/bin
 rm -f $sourcePath/premake4*
-cp -R $sourcePath $sourcePath-dev
 tar -zcpf libhomegear-addon0_$version.orig.tar.gz $sourcePath
 cd $sourcePath
 dch -v $version-$1 -M
