@@ -44,7 +44,89 @@ Base::~Base()
 	GD::rpcServer.stop();
 }
 
-std::shared_ptr<Variable> Base::invoke(std::string methodName, std::shared_ptr<std::list<std::shared_ptr<Variable>>> parameters)
+void Base::addPeer(uint64_t peerId)
+{
+	try
+	{
+		std::vector<uint64_t> peerIds{ peerId };
+		GD::rpcServer.addPeers(peerIds);
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
+void Base::addPeers(std::vector<uint64_t> peerIds)
+{
+	try
+	{
+		GD::rpcServer.addPeers(peerIds);
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
+void Base::removePeer(uint64_t peerId)
+{
+	try
+	{
+		std::vector<uint64_t> peerIds{ peerId };
+		GD::rpcServer.removePeers(peerIds);
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
+void Base::removePeers(std::vector<uint64_t> peerIds)
+{
+	try
+	{
+		GD::rpcServer.removePeers(peerIds);
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
+PVariable Base::invoke(std::string methodName, PRPCList parameters)
 {
 	return GD::rpcClient.invoke(methodName, parameters);
 }

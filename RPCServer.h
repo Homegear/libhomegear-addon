@@ -44,6 +44,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <set>
 #include <iterator>
 #include <sstream>
 #include <utility>
@@ -68,6 +69,9 @@ namespace HgAddonLib
 			std::map<std::string, RPCMethod>* getMethods() { return &_rpcMethods; }
 			std::shared_ptr<Variable> callMethod(std::string& methodName, std::shared_ptr<Variable>& parameters);
 			std::string getId() { return (_serverSocketDescriptor != -1) ? _id : ""; }
+
+			void addPeers(std::vector<uint64_t>& peerIds);
+			void removePeers(std::vector<uint64_t>& peerIds);
 		protected:
 		private:
 			Output _out;
@@ -82,6 +86,8 @@ namespace HgAddonLib
 			int32_t _lastInit = 0;
 			int32_t _lastKeepAlive = 0;
 			uint64_t _myPeerId = 0;
+			std::mutex _subscribedPeersMutex;
+			std::set<uint64_t> _subscribedPeers;
 
 			void getSocketDescriptor();
 			int32_t getClientSocketDescriptor();

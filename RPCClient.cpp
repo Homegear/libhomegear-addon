@@ -78,7 +78,7 @@ void RPCClient::setPort(int32_t port)
 	_port = port;
 }
 
-std::shared_ptr<Variable> RPCClient::invoke(std::string methodName, std::shared_ptr<std::list<std::shared_ptr<Variable>>> parameters)
+PVariable RPCClient::invoke(std::string methodName, PRPCList parameters)
 {
 	try
 	{
@@ -87,7 +87,7 @@ std::shared_ptr<Variable> RPCClient::invoke(std::string methodName, std::shared_
 		if(GD::debugLevel >= 5 && parameters)
 		{
 			GD::out.printDebug("Parameters:");
-			for(std::list<std::shared_ptr<Variable>>::iterator i = parameters->begin(); i != parameters->end(); ++i)
+			for(RPCList::iterator i = parameters->begin(); i != parameters->end(); ++i)
 			{
 				(*i)->print();
 			}
@@ -105,7 +105,7 @@ std::shared_ptr<Variable> RPCClient::invoke(std::string methodName, std::shared_
 		}
 		if(retry) return Variable::createError(-32300, "Request timed out.");
 		if(responseData.empty()) return Variable::createError(-32700, "No response data.");
-		std::shared_ptr<Variable> returnValue;
+		PVariable returnValue;
 		returnValue = _rpcDecoder.decodeResponse(responseData);
 		if(returnValue->errorStruct) GD::out.printError("Error in RPC response: faultCode: " + std::to_string(returnValue->structValue->at("faultCode")->integerValue) + " faultString: " + returnValue->structValue->at("faultString")->stringValue);
 		else

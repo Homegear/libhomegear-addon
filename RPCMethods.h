@@ -49,7 +49,7 @@ public:
 		setHelp("Lists all XML RPC methods.");
 		addSignature(VariableType::rpcArray, std::vector<VariableType>());
 	}
-	std::shared_ptr<Variable> invoke(std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters);
+	PVariable invoke(PRPCArray parameters);
 };
 
 class RPCSystemMethodHelp : public RPCMethod
@@ -60,7 +60,7 @@ public:
 		setHelp("Returns a description of the method.");
 		addSignature(VariableType::rpcString, std::vector<VariableType>{VariableType::rpcString});
 	}
-	std::shared_ptr<Variable> invoke(std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters);
+	PVariable invoke(PRPCArray parameters);
 };
 
 class RPCSystemMethodSignature : public RPCMethod
@@ -71,7 +71,7 @@ public:
 		setHelp("Returns the method's signature.");
 		addSignature(VariableType::rpcArray, std::vector<VariableType>{VariableType::rpcString});
 	}
-	std::shared_ptr<Variable> invoke(std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters);
+	PVariable invoke(PRPCArray parameters);
 };
 
 class RPCSystemMulticall : public RPCMethod
@@ -82,7 +82,33 @@ public:
 		setHelp("Calls multiple XML RPC methods.");
 		addSignature(VariableType::rpcArray, std::vector<VariableType>{VariableType::rpcArray});
 	}
-	std::shared_ptr<Variable> invoke(std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters);
+	PVariable invoke(PRPCArray parameters);
+};
+
+class RPCDeleteDevices : public RPCMethod
+{
+public:
+	RPCDeleteDevices(Base* base)
+	{
+		_base = base;
+		addSignature(VariableType::rpcArray, std::vector<VariableType>{VariableType::rpcString, VariableType::rpcArray});
+	}
+	PVariable invoke(PRPCArray parameters);
+protected:
+	Base* _base = nullptr;
+};
+
+class RPCError : public RPCMethod
+{
+public:
+	RPCError(Base* base)
+	{
+		_base = base;
+		addSignature(VariableType::rpcArray, std::vector<VariableType>{VariableType::rpcString, VariableType::rpcInteger, VariableType::rpcString});
+	}
+	PVariable invoke(PRPCArray parameters);
+protected:
+	Base* _base = nullptr;
 };
 
 class RPCEvent : public RPCMethod
@@ -91,12 +117,37 @@ public:
 	RPCEvent(Base* base)
 	{
 		_base = base;
-		addSignature(VariableType::rpcArray, std::vector<VariableType>{VariableType::rpcArray});
+		addSignature(VariableType::rpcVoid, std::vector<VariableType>{VariableType::rpcString, VariableType::rpcInteger, VariableType::rpcInteger, VariableType::rpcString, VariableType::rpcVariant});
 	}
-	std::shared_ptr<Variable> invoke(std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters);
+	PVariable invoke(PRPCArray parameters);
 protected:
 	Base* _base = nullptr;
 };
 
+class RPCNewDevices : public RPCMethod
+{
+public:
+	RPCNewDevices(Base* base)
+	{
+		_base = base;
+		addSignature(VariableType::rpcArray, std::vector<VariableType>{VariableType::rpcString, VariableType::rpcArray});
+	}
+	PVariable invoke(PRPCArray parameters);
+protected:
+	Base* _base = nullptr;
+};
+
+class RPCUpdateDevice : public RPCMethod
+{
+public:
+	RPCUpdateDevice(Base* base)
+	{
+		_base = base;
+		addSignature(VariableType::rpcArray, std::vector<VariableType>{VariableType::rpcString, VariableType::rpcInteger, VariableType::rpcInteger, VariableType::rpcInteger});
+	}
+	PVariable invoke(PRPCArray parameters);
+protected:
+	Base* _base = nullptr;
+};
 }
 #endif

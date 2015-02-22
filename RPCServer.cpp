@@ -53,6 +53,7 @@ void RPCServer::start(Base* base, uint64_t myPeerId)
 			return;
 		}
 		_myPeerId = myPeerId;
+		if(_myPeerId != 0) _subscribedPeers.insert(_myPeerId);
 		stop();
 		_stopServer = false;
 		registerMethods(base);
@@ -103,6 +104,55 @@ void RPCServer::stop()
     }
 }
 
+void RPCServer::addPeers(std::vector<uint64_t>& peerIds)
+{
+	try
+	{
+		//Mutex does not need to be locked, as no iterators are invalidated
+		for(std::vector<uint64_t>::iterator i = peerIds.begin(); i != peerIds.end(); ++i)
+		{
+			_subscribedPeers.insert(*i);
+		}
+	}
+	catch(const std::exception& ex)
+    {
+    	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(Exception& ex)
+    {
+    	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+}
+
+void RPCServer::removePeers(std::vector<uint64_t>& peerIds)
+{
+	try
+	{
+		_subscribedPeersMutex.lock();
+		for(std::vector<uint64_t>::iterator i = peerIds.begin(); i != peerIds.end(); ++i)
+		{
+			_subscribedPeers.erase(*i);
+		}
+	}
+	catch(const std::exception& ex)
+    {
+    	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(Exception& ex)
+    {
+    	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+    _subscribedPeersMutex.unlock();
+}
+
 void RPCServer::registerMethods(Base* base)
 {
 	try
@@ -112,7 +162,11 @@ void RPCServer::registerMethods(Base* base)
 		_rpcMethods.insert(std::pair<std::string, RPCMethod>("system.methodHelp", RPCSystemMethodHelp()));
 		_rpcMethods.insert(std::pair<std::string, RPCMethod>("system.methodSignature", RPCSystemMethodSignature()));
 		_rpcMethods.insert(std::pair<std::string, RPCMethod>("system.multicall", RPCSystemMulticall()));
+		_rpcMethods.insert(std::pair<std::string, RPCMethod>("deleteDevices", RPCDeleteDevices(base)));
+		_rpcMethods.insert(std::pair<std::string, RPCMethod>("error", RPCError(base)));
 		_rpcMethods.insert(std::pair<std::string, RPCMethod>("event", RPCEvent(base)));
+		_rpcMethods.insert(std::pair<std::string, RPCMethod>("newDevices", RPCNewDevices(base)));
+		_rpcMethods.insert(std::pair<std::string, RPCMethod>("updateDevice", RPCUpdateDevice(base)));
 	}
 	catch(const std::exception& ex)
     {
@@ -372,7 +426,14 @@ void RPCServer::sendInit()
 		if(GD::hf.getTimeSeconds() - _lastInit < 30) return;
 		_lastInit = GD::hf.getTimeSeconds();
 		if(GD::rpcClient.invoke("init", RPCCLIENTPARAMETERS(id, id + "-AddonLib", 15))->errorStruct) return;
-		GD::rpcClient.invoke("subscribePeers", RPCCLIENTPARAMETERS(id, std::shared_ptr<RPCArray>(new RPCArray{std::shared_ptr<Variable>(new Variable((uint32_t)_myPeerId))})));
+		std::shared_ptr<RPCArray> subscribedPeers(new RPCArray());
+		_subscribedPeersMutex.lock();
+		for(std::set<uint64_t>::const_iterator i = _subscribedPeers.begin(); i != _subscribedPeers.end(); ++i)
+		{
+			subscribedPeers->push_back(PVariable(new Variable((uint32_t)*i)));
+		}
+		_subscribedPeersMutex.unlock();
+		GD::rpcClient.invoke("subscribePeers", RPCCLIENTPARAMETERS(id, subscribedPeers));
 	}
 	catch(const std::exception& ex)
     {

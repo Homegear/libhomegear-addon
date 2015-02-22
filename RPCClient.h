@@ -62,7 +62,7 @@ public:
 	virtual ~RPCClient();
 
 	void setPort(int32_t port);
-	std::shared_ptr<Variable> invoke(std::string methodName, std::shared_ptr<std::list<std::shared_ptr<Variable>>> parameters);
+	PVariable invoke(std::string methodName, PRPCList parameters);
 
 	void reset();
 protected:

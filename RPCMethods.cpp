@@ -33,17 +33,17 @@
 namespace HgAddonLib
 {
 
-std::shared_ptr<Variable> RPCSystemListMethods::invoke(std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters)
+PVariable RPCSystemListMethods::invoke(PRPCArray parameters)
 {
 	try
 	{
 		if(!parameters->empty()) return getError(ParameterError::Enum::wrongCount);
 
-		std::shared_ptr<Variable> methods(new Variable(VariableType::rpcArray));
+		PVariable methods(new Variable(VariableType::rpcArray));
 
 		for(std::map<std::string, RPCMethod>::iterator i = GD::rpcServer.getMethods()->begin(); i != GD::rpcServer.getMethods()->end(); ++i)
 		{
-			methods->arrayValue->push_back(std::shared_ptr<Variable>(new Variable(i->first)));
+			methods->arrayValue->push_back(PVariable(new Variable(i->first)));
 		}
 
 		return methods;
@@ -63,7 +63,7 @@ std::shared_ptr<Variable> RPCSystemListMethods::invoke(std::shared_ptr<std::vect
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-std::shared_ptr<Variable> RPCSystemMethodHelp::invoke(std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters)
+PVariable RPCSystemMethodHelp::invoke(PRPCArray parameters)
 {
 	try
 	{
@@ -75,7 +75,7 @@ std::shared_ptr<Variable> RPCSystemMethodHelp::invoke(std::shared_ptr<std::vecto
 			return Variable::createError(-32602, "Method not found.");
 		}
 
-		std::shared_ptr<Variable> help = GD::rpcServer.getMethods()->at(parameters->at(0)->stringValue).getHelp();
+		PVariable help = GD::rpcServer.getMethods()->at(parameters->at(0)->stringValue).getHelp();
 
 		if(!help) help.reset(new Variable(VariableType::rpcString));
 
@@ -96,7 +96,7 @@ std::shared_ptr<Variable> RPCSystemMethodHelp::invoke(std::shared_ptr<std::vecto
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-std::shared_ptr<Variable> RPCSystemMethodSignature::invoke(std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters)
+PVariable RPCSystemMethodSignature::invoke(PRPCArray parameters)
 {
 	try
 	{
@@ -108,7 +108,7 @@ std::shared_ptr<Variable> RPCSystemMethodSignature::invoke(std::shared_ptr<std::
 			return Variable::createError(-32602, "Method not found.");
 		}
 
-		std::shared_ptr<Variable> signature = GD::rpcServer.getMethods()->at(parameters->at(0)->stringValue).getSignature();
+		PVariable signature = GD::rpcServer.getMethods()->at(parameters->at(0)->stringValue).getSignature();
 
 		if(!signature) signature.reset(new Variable(VariableType::rpcArray));
 
@@ -135,7 +135,7 @@ std::shared_ptr<Variable> RPCSystemMethodSignature::invoke(std::shared_ptr<std::
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-std::shared_ptr<Variable> RPCSystemMulticall::invoke(std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters)
+PVariable RPCSystemMulticall::invoke(PRPCArray parameters)
 {
 	try
 	{
@@ -143,8 +143,8 @@ std::shared_ptr<Variable> RPCSystemMulticall::invoke(std::shared_ptr<std::vector
 		if(error != ParameterError::Enum::noError) return getError(error);
 
 		std::map<std::string, RPCMethod>* methods = GD::rpcServer.getMethods();
-		std::shared_ptr<Variable> returns(new Variable(VariableType::rpcArray));
-		for(std::vector<std::shared_ptr<Variable>>::iterator i = parameters->at(0)->arrayValue->begin(); i != parameters->at(0)->arrayValue->end(); ++i)
+		PVariable returns(new Variable(VariableType::rpcArray));
+		for(RPCArray::iterator i = parameters->at(0)->arrayValue->begin(); i != parameters->at(0)->arrayValue->end(); ++i)
 		{
 			if((*i)->type != VariableType::rpcStruct)
 			{
@@ -167,7 +167,7 @@ std::shared_ptr<Variable> RPCSystemMulticall::invoke(std::shared_ptr<std::vector
 				continue;
 			}
 			std::string methodName = (*i)->structValue->at("methodName")->stringValue;
-			std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters = (*i)->structValue->at("params")->arrayValue;
+			PRPCArray parameters = (*i)->structValue->at("params")->arrayValue;
 
 			if(methodName == "system.multicall") returns->arrayValue->push_back(Variable::createError(-32602, "Recursive calls to system.multicall are not allowed."));
 			else if(methods->find(methodName) == methods->end()) returns->arrayValue->push_back(Variable::createError(-32601, "Requested method not found."));
@@ -191,7 +191,63 @@ std::shared_ptr<Variable> RPCSystemMulticall::invoke(std::shared_ptr<std::vector
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-std::shared_ptr<Variable> RPCEvent::invoke(std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters)
+PVariable RPCDeleteDevices::invoke(PRPCArray parameters)
+{
+	try
+	{
+		ParameterError::Enum error = checkParameters(parameters, std::vector<VariableType>({ VariableType::rpcString, VariableType::rpcArray }));
+		if(error != ParameterError::Enum::noError) return getError(error);
+
+		if(!_base) return PVariable(new Variable());
+
+		for(RPCArray::iterator i = parameters->at(1)->arrayValue->begin(); i != parameters->at(1)->arrayValue->end(); ++i)
+		{
+			if((*i)->structValue->find("ID") != (*i)->structValue->end()) _base->deleteDevice((*i)->structValue->at("ID")->integerValue);
+		}
+		return PVariable(new Variable());
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+    return Variable::createError(-32500, "Unknown application error.");
+}
+
+PVariable RPCError::invoke(PRPCArray parameters)
+{
+	try
+	{
+		ParameterError::Enum error = checkParameters(parameters, std::vector<VariableType>({ VariableType::rpcString, VariableType::rpcInteger, VariableType::rpcString }));
+		if(error != ParameterError::Enum::noError) return getError(error);
+
+		if(_base) _base->error(parameters->at(1)->integerValue, parameters->at(2)->stringValue);
+
+		return PVariable(new Variable());
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+    return Variable::createError(-32500, "Unknown application error.");
+}
+
+PVariable RPCEvent::invoke(PRPCArray parameters)
 {
 	try
 	{
@@ -200,7 +256,63 @@ std::shared_ptr<Variable> RPCEvent::invoke(std::shared_ptr<std::vector<std::shar
 
 		if(_base) _base->event(parameters->at(1)->integerValue, parameters->at(2)->integerValue, parameters->at(3)->stringValue, parameters->at(4));
 
-		return std::shared_ptr<Variable>(new Variable());
+		return PVariable(new Variable());
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+    return Variable::createError(-32500, "Unknown application error.");
+}
+
+PVariable RPCNewDevices::invoke(PRPCArray parameters)
+{
+	try
+	{
+		ParameterError::Enum error = checkParameters(parameters, std::vector<VariableType>({ VariableType::rpcString, VariableType::rpcArray }));
+		if(error != ParameterError::Enum::noError) return getError(error);
+
+		if(!_base) return PVariable(new Variable());
+
+		for(RPCArray::iterator i = parameters->at(1)->arrayValue->begin(); i != parameters->at(1)->arrayValue->end(); ++i)
+		{
+			if((*i)->structValue->find("ID") != (*i)->structValue->end()) _base->newDevice((*i)->structValue->at("ID")->integerValue);
+		}
+		return PVariable(new Variable());
+	}
+	catch(const std::exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(Exception& ex)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
+    }
+    catch(...)
+    {
+    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    }
+    return Variable::createError(-32500, "Unknown application error.");
+}
+
+PVariable RPCUpdateDevice::invoke(PRPCArray parameters)
+{
+	try
+	{
+		ParameterError::Enum error = checkParameters(parameters, std::vector<VariableType>({ VariableType::rpcString, VariableType::rpcInteger, VariableType::rpcInteger, VariableType::rpcInteger }));
+		if(error != ParameterError::Enum::noError) return getError(error);
+
+		if(!_base) _base->updateDevice(parameters->at(1)->integerValue, parameters->at(2)->integerValue, parameters->at(3)->integerValue);
+
+		return PVariable(new Variable());
 	}
 	catch(const std::exception& ex)
     {
