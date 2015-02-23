@@ -48,6 +48,9 @@ namespace HgAddonLib
 #define RPCCLIENTPARAMETERS6(p1, p2, p3, p4, p5, p6) PRPCList(new RPCList { PVariable(new Variable(p1)), PVariable(new Variable(p2)), PVariable(new Variable(p3)), PVariable(new Variable(p4)), PVariable(new Variable(p5)), PVariable(new Variable(p6)) })
 #define RPCCLIENTPARAMETERS7(p1, p2, p3, p4, p5, p6, p7) PRPCList(new RPCList { PVariable(new Variable(p1)), PVariable(new Variable(p2)), PVariable(new Variable(p3)), PVariable(new Variable(p4)), PVariable(new Variable(p5)), PVariable(new Variable(p6)), PVariable(new Variable(p7)) })
 
+/**
+ * Base class of the library. To use the library you need to implement a class inheriting from Base.
+ */
 class Base
 {
 public:
