@@ -40,13 +40,13 @@ namespace HgAddonLib
 
 #define GETRPCCLIENTPARAMETERS(_1,_2,_3,_4,_5,_6,_7,NAME,...) NAME
 #define RPCCLIENTPARAMETERS(...) GETRPCCLIENTPARAMETERS(__VA_ARGS__, RPCCLIENTPARAMETERS7, RPCCLIENTPARAMETERS6, RPCCLIENTPARAMETERS5, RPCCLIENTPARAMETERS4, RPCCLIENTPARAMETERS3, RPCCLIENTPARAMETERS2, RPCCLIENTPARAMETERS1)(__VA_ARGS__)
-#define RPCCLIENTPARAMETERS1(p1) PRPCList(new RPCList { PVariable(new Variable(p1)) })
-#define RPCCLIENTPARAMETERS2(p1, p2) PRPCList(new RPCList { PVariable(new Variable(p1)), PVariable(new Variable(p2)) })
-#define RPCCLIENTPARAMETERS3(p1, p2, p3) PRPCList(new RPCList { PVariable(new Variable(p1)), PVariable(new Variable(p2)), PVariable(new Variable(p3)) })
-#define RPCCLIENTPARAMETERS4(p1, p2, p3, p4) PRPCList(new RPCList { PVariable(new Variable(p1)), PVariable(new Variable(p2)), PVariable(new Variable(p3)), PVariable(new Variable(p4)) })
-#define RPCCLIENTPARAMETERS5(p1, p2, p3, p4, p5) PRPCList(new RPCList { PVariable(new Variable(p1)), PVariable(new Variable(p2)), PVariable(new Variable(p3)), PVariable(new Variable(p4)), PVariable(new Variable(p5)) })
-#define RPCCLIENTPARAMETERS6(p1, p2, p3, p4, p5, p6) PRPCList(new RPCList { PVariable(new Variable(p1)), PVariable(new Variable(p2)), PVariable(new Variable(p3)), PVariable(new Variable(p4)), PVariable(new Variable(p5)), PVariable(new Variable(p6)) })
-#define RPCCLIENTPARAMETERS7(p1, p2, p3, p4, p5, p6, p7) PRPCList(new RPCList { PVariable(new Variable(p1)), PVariable(new Variable(p2)), PVariable(new Variable(p3)), PVariable(new Variable(p4)), PVariable(new Variable(p5)), PVariable(new Variable(p6)), PVariable(new Variable(p7)) })
+#define RPCCLIENTPARAMETERS1(p1) HgAddonLib::PRPCList(new HgAddonLib::RPCList { HgAddonLib::PVariable(new HgAddonLib::Variable(p1)) })
+#define RPCCLIENTPARAMETERS2(p1, p2) HgAddonLib::PRPCList(new HgAddonLib::RPCList { HgAddonLib::PVariable(new HgAddonLib::Variable(p1)), HgAddonLib::PVariable(new HgAddonLib::Variable(p2)) })
+#define RPCCLIENTPARAMETERS3(p1, p2, p3) HgAddonLib::PRPCList(new HgAddonLib::RPCList { HgAddonLib::PVariable(new HgAddonLib::Variable(p1)), HgAddonLib::PVariable(new HgAddonLib::Variable(p2)), HgAddonLib::PVariable(new HgAddonLib::Variable(p3)) })
+#define RPCCLIENTPARAMETERS4(p1, p2, p3, p4) HgAddonLib::PRPCList(new HgAddonLib::RPCList { HgAddonLib::PVariable(new HgAddonLib::Variable(p1)), HgAddonLib::PVariable(new HgAddonLib::Variable(p2)), HgAddonLib::PVariable(new HgAddonLib::Variable(p3)), HgAddonLib::PVariable(new HgAddonLib::Variable(p4)) })
+#define RPCCLIENTPARAMETERS5(p1, p2, p3, p4, p5) HgAddonLib::PRPCList(new HgAddonLib::RPCList { HgAddonLib::PVariable(new HgAddonLib::Variable(p1)), HgAddonLib::PVariable(new HgAddonLib::Variable(p2)), HgAddonLib::PVariable(new HgAddonLib::Variable(p3)), HgAddonLib::PVariable(new HgAddonLib::Variable(p4)), HgAddonLib::PVariable(new HgAddonLib::Variable(p5)) })
+#define RPCCLIENTPARAMETERS6(p1, p2, p3, p4, p5, p6) HgAddonLib::PRPCList(new HgAddonLib::RPCList { HgAddonLib::PVariable(new HgAddonLib::Variable(p1)), HgAddonLib::PVariable(new HgAddonLib::Variable(p2)), HgAddonLib::PVariable(new HgAddonLib::Variable(p3)), HgAddonLib::PVariable(new HgAddonLib::Variable(p4)), HgAddonLib::PVariable(new HgAddonLib::Variable(p5)), HgAddonLib::PVariable(new HgAddonLib::Variable(p6)) })
+#define RPCCLIENTPARAMETERS7(p1, p2, p3, p4, p5, p6, p7) HgAddonLib::PRPCList(new HgAddonLib::RPCList { HgAddonLib::PVariable(new HgAddonLib::Variable(p1)), HgAddonLib::PVariable(new HgAddonLib::Variable(p2)), HgAddonLib::PVariable(new HgAddonLib::Variable(p3)), HgAddonLib::PVariable(new HgAddonLib::Variable(p4)), HgAddonLib::PVariable(new HgAddonLib::Variable(p5)), HgAddonLib::PVariable(new HgAddonLib::Variable(p6)), HgAddonLib::PVariable(new HgAddonLib::Variable(p7)) })
 
 /**
  * Base class of the library. To use the library you need to implement a class inheriting from Base.
@@ -147,7 +147,7 @@ public:
 	 */
 	virtual void updateDevice(uint64_t peerId, int32_t channel, int32_t flags) {}
 protected:
-
+	uint64_t _myPeerId = 0;
 };
 
 }

@@ -40,6 +40,7 @@
 
 namespace HgAddonLib
 {
+class Base;
 
 class RPCSystemListMethods : public RPCMethod
 {

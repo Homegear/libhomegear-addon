@@ -66,7 +66,7 @@ namespace HgAddonLib
 
 			void start(Base* base, uint64_t myPeerId);
 			void stop();
-			std::map<std::string, RPCMethod>* getMethods() { return &_rpcMethods; }
+			std::map<std::string, std::unique_ptr<RPCMethod>>* getMethods() { return &_rpcMethods; }
 			std::shared_ptr<Variable> callMethod(std::string& methodName, std::shared_ptr<Variable>& parameters);
 			std::string getId() { return (_serverSocketDescriptor != -1) ? _id : ""; }
 
@@ -79,7 +79,7 @@ namespace HgAddonLib
 			std::thread _mainThread;
 			int32_t _backlog = 2;
 			int32_t _serverSocketDescriptor = -1;
-			std::map<std::string, RPCMethod> _rpcMethods;
+			std::map<std::string, std::unique_ptr<RPCMethod>> _rpcMethods;
 			RPCDecoder _rpcDecoder;
 			RPCEncoder _rpcEncoder;
 			std::string _id;

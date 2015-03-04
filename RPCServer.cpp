@@ -158,15 +158,15 @@ void RPCServer::registerMethods(Base* base)
 	try
 	{
 		_rpcMethods.clear();
-		_rpcMethods.insert(std::pair<std::string, RPCMethod>("system.listMethods", RPCSystemListMethods()));
-		_rpcMethods.insert(std::pair<std::string, RPCMethod>("system.methodHelp", RPCSystemMethodHelp()));
-		_rpcMethods.insert(std::pair<std::string, RPCMethod>("system.methodSignature", RPCSystemMethodSignature()));
-		_rpcMethods.insert(std::pair<std::string, RPCMethod>("system.multicall", RPCSystemMulticall()));
-		_rpcMethods.insert(std::pair<std::string, RPCMethod>("deleteDevices", RPCDeleteDevices(base)));
-		_rpcMethods.insert(std::pair<std::string, RPCMethod>("error", RPCError(base)));
-		_rpcMethods.insert(std::pair<std::string, RPCMethod>("event", RPCEvent(base)));
-		_rpcMethods.insert(std::pair<std::string, RPCMethod>("newDevices", RPCNewDevices(base)));
-		_rpcMethods.insert(std::pair<std::string, RPCMethod>("updateDevice", RPCUpdateDevice(base)));
+		_rpcMethods.insert(std::pair<std::string, std::unique_ptr<RPCMethod>>("system.listMethods", std::unique_ptr<RPCMethod>(new RPCSystemListMethods())));
+		_rpcMethods.insert(std::pair<std::string, std::unique_ptr<RPCMethod>>("system.methodHelp", std::unique_ptr<RPCMethod>(new RPCSystemMethodHelp())));
+		_rpcMethods.insert(std::pair<std::string, std::unique_ptr<RPCMethod>>("system.methodSignature", std::unique_ptr<RPCMethod>(new RPCSystemMethodSignature())));
+		_rpcMethods.insert(std::pair<std::string, std::unique_ptr<RPCMethod>>("system.multicall", std::unique_ptr<RPCMethod>(new RPCSystemMulticall())));
+		_rpcMethods.insert(std::pair<std::string, std::unique_ptr<RPCMethod>>("deleteDevices", std::unique_ptr<RPCMethod>(new RPCDeleteDevices(base))));
+		_rpcMethods.insert(std::pair<std::string, std::unique_ptr<RPCMethod>>("error", std::unique_ptr<RPCMethod>(new RPCError(base))));
+		_rpcMethods.insert(std::pair<std::string, std::unique_ptr<RPCMethod>>("event", std::unique_ptr<RPCMethod>(new RPCEvent(base))));
+		_rpcMethods.insert(std::pair<std::string, std::unique_ptr<RPCMethod>>("newDevices", std::unique_ptr<RPCMethod>(new RPCNewDevices(base))));
+		_rpcMethods.insert(std::pair<std::string, std::unique_ptr<RPCMethod>>("updateDevice", std::unique_ptr<RPCMethod>(new RPCUpdateDevice(base))));
 	}
 	catch(const std::exception& ex)
     {
@@ -353,7 +353,7 @@ std::shared_ptr<Variable> RPCServer::callMethod(std::string& methodName, std::sh
 				(*i)->print();
 			}
 		}
-		std::shared_ptr<Variable> ret = _rpcMethods.at(methodName).invoke(parameters->arrayValue);
+		std::shared_ptr<Variable> ret = _rpcMethods.at(methodName)->invoke(parameters->arrayValue);
 		if(GD::debugLevel >= 5)
 		{
 			_out.printDebug("Response: ");
@@ -382,7 +382,6 @@ void RPCServer::callMethod(SocketOperations& socket, std::string methodName, std
 	{
 		if(_rpcMethods.find(methodName) == _rpcMethods.end())
 		{
-			_out.printError("Warning: RPC method not found: " + methodName);
 			sendRPCResponseToClient(socket, Variable::createError(-32601, ": Requested method not found."));
 			return;
 		}
@@ -394,7 +393,7 @@ void RPCServer::callMethod(SocketOperations& socket, std::string methodName, std
 				(*i)->print();
 			}
 		}
-		std::shared_ptr<Variable> ret = _rpcMethods.at(methodName).invoke(parameters);
+		std::shared_ptr<Variable> ret = _rpcMethods.at(methodName)->invoke(parameters);
 		if(GD::debugLevel >= 5)
 		{
 			_out.printDebug("Response: ");
@@ -433,6 +432,7 @@ void RPCServer::sendInit()
 			subscribedPeers->push_back(PVariable(new Variable((uint32_t)*i)));
 		}
 		_subscribedPeersMutex.unlock();
+		GD::rpcClient.invoke("setClientType", RPCCLIENTPARAMETERS(1));
 		GD::rpcClient.invoke("subscribePeers", RPCCLIENTPARAMETERS(id, subscribedPeers));
 	}
 	catch(const std::exception& ex)

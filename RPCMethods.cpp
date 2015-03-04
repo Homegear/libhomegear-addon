@@ -41,7 +41,7 @@ PVariable RPCSystemListMethods::invoke(PRPCArray parameters)
 
 		PVariable methods(new Variable(VariableType::rpcArray));
 
-		for(std::map<std::string, RPCMethod>::iterator i = GD::rpcServer.getMethods()->begin(); i != GD::rpcServer.getMethods()->end(); ++i)
+		for(std::map<std::string, std::unique_ptr<RPCMethod>>::iterator i = GD::rpcServer.getMethods()->begin(); i != GD::rpcServer.getMethods()->end(); ++i)
 		{
 			methods->arrayValue->push_back(PVariable(new Variable(i->first)));
 		}
@@ -75,7 +75,7 @@ PVariable RPCSystemMethodHelp::invoke(PRPCArray parameters)
 			return Variable::createError(-32602, "Method not found.");
 		}
 
-		PVariable help = GD::rpcServer.getMethods()->at(parameters->at(0)->stringValue).getHelp();
+		PVariable help = GD::rpcServer.getMethods()->at(parameters->at(0)->stringValue)->getHelp();
 
 		if(!help) help.reset(new Variable(VariableType::rpcString));
 
@@ -108,7 +108,7 @@ PVariable RPCSystemMethodSignature::invoke(PRPCArray parameters)
 			return Variable::createError(-32602, "Method not found.");
 		}
 
-		PVariable signature = GD::rpcServer.getMethods()->at(parameters->at(0)->stringValue).getSignature();
+		PVariable signature = GD::rpcServer.getMethods()->at(parameters->at(0)->stringValue)->getSignature();
 
 		if(!signature) signature.reset(new Variable(VariableType::rpcArray));
 
@@ -142,7 +142,7 @@ PVariable RPCSystemMulticall::invoke(PRPCArray parameters)
 		ParameterError::Enum error = checkParameters(parameters, std::vector<VariableType>({ VariableType::rpcArray }));
 		if(error != ParameterError::Enum::noError) return getError(error);
 
-		std::map<std::string, RPCMethod>* methods = GD::rpcServer.getMethods();
+		std::map<std::string, std::unique_ptr<RPCMethod>>* methods = GD::rpcServer.getMethods();
 		PVariable returns(new Variable(VariableType::rpcArray));
 		for(RPCArray::iterator i = parameters->at(0)->arrayValue->begin(); i != parameters->at(0)->arrayValue->end(); ++i)
 		{
@@ -171,7 +171,7 @@ PVariable RPCSystemMulticall::invoke(PRPCArray parameters)
 
 			if(methodName == "system.multicall") returns->arrayValue->push_back(Variable::createError(-32602, "Recursive calls to system.multicall are not allowed."));
 			else if(methods->find(methodName) == methods->end()) returns->arrayValue->push_back(Variable::createError(-32601, "Requested method not found."));
-			else returns->arrayValue->push_back(methods->at(methodName).invoke(parameters));
+			else returns->arrayValue->push_back(methods->at(methodName)->invoke(parameters));
 		}
 
 		return returns;

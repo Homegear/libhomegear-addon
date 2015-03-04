@@ -34,6 +34,7 @@ namespace HgAddonLib
 {
 Base::Base(int32_t homegearPort, uint64_t myPeerId, int32_t debugLevel)
 {
+	_myPeerId = myPeerId;
 	GD::debugLevel = debugLevel;
 	GD::rpcClient.setPort(homegearPort);
 	GD::rpcServer.start(this, myPeerId);

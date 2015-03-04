@@ -49,15 +49,15 @@ public:
 	RPCMethod() {}
 	virtual ~RPCMethod() {}
 
-	ParameterError::Enum checkParameters(std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters, std::vector<VariableType> types);
-	ParameterError::Enum checkParameters(std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters, std::vector<std::vector<VariableType>> types);
-	virtual std::shared_ptr<Variable> invoke(std::shared_ptr<std::vector<std::shared_ptr<Variable>>> parameters);
-	std::shared_ptr<Variable> getError(ParameterError::Enum error);
-	std::shared_ptr<Variable> getSignature() { return _signatures; }
-	std::shared_ptr<Variable> getHelp() { return _help; }
+	ParameterError::Enum checkParameters(PRPCArray parameters, std::vector<VariableType> types);
+	ParameterError::Enum checkParameters(PRPCArray parameters, std::vector<std::vector<VariableType>> types);
+	virtual PVariable invoke(PRPCArray parameters);
+	PVariable getError(ParameterError::Enum error);
+	PVariable getSignature() { return _signatures; }
+	PVariable getHelp() { return _help; }
 protected:
-	std::shared_ptr<Variable> _signatures;
-	std::shared_ptr<Variable> _help;
+	PVariable _signatures;
+	PVariable _help;
 
 	void addSignature(VariableType returnType, std::vector<VariableType> parameterTypes);
 	void setHelp(std::string help);
