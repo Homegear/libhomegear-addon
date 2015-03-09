@@ -142,7 +142,7 @@ void RPCClient::sendRequest(std::vector<char>& data, std::vector<char>& response
 		{
 			if(!_socket.connected())
 			{
-				_socket.setHostname("localhost");
+				_socket.setHostname("127.0.0.1");
 				_socket.setPort(std::to_string(_port));
 				_socket.open();
 			}
