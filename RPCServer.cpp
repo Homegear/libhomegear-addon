@@ -201,7 +201,11 @@ void RPCServer::mainThread()
 					getSocketDescriptor();
 					continue;
 				}
-				clientSocketDescriptor = getClientSocketDescriptor();
+				for(int32_t i = 0; i < 6; i++)
+				{
+					clientSocketDescriptor = getClientSocketDescriptor();
+					if(clientSocketDescriptor != -1 || _stopServer) break;
+				}
 				if(clientSocketDescriptor == -1) continue;
 
 				socket = SocketOperations(clientSocketDescriptor);
