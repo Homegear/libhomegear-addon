@@ -615,7 +615,7 @@ int32_t RPCServer::getClientSocketDescriptor()
 		if(nfds <= 0)
 		{
 			GD::out.printError("Error: Server file descriptor is invalid.");
-			return _serverSocketDescriptor;
+			return socketDescriptor;
 		}
 		FD_SET(_serverSocketDescriptor, &readFileDescriptor);
 		if(!select(nfds, &readFileDescriptor, NULL, NULL, &timeout))

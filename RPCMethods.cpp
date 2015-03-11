@@ -310,7 +310,7 @@ PVariable RPCUpdateDevice::invoke(PRPCArray parameters)
 		ParameterError::Enum error = checkParameters(parameters, std::vector<VariableType>({ VariableType::rpcString, VariableType::rpcInteger, VariableType::rpcInteger, VariableType::rpcInteger }));
 		if(error != ParameterError::Enum::noError) return getError(error);
 
-		if(!_base) _base->updateDevice(parameters->at(1)->integerValue, parameters->at(2)->integerValue, parameters->at(3)->integerValue);
+		if(_base) _base->updateDevice(parameters->at(1)->integerValue, parameters->at(2)->integerValue, parameters->at(3)->integerValue);
 
 		return PVariable(new Variable());
 	}
