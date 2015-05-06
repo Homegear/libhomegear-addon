@@ -37,7 +37,7 @@ PVariable RPCSystemListMethods::invoke(PRPCArray parameters)
 {
 	try
 	{
-		if(!parameters->empty()) return getError(ParameterError::Enum::wrongCount);
+		if(parameters->size() > 1) return getError(ParameterError::Enum::wrongCount);
 
 		PVariable methods(new Variable(VariableType::rpcArray));
 
